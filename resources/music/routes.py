@@ -5,16 +5,18 @@ from app import app
 from database import music
 
 @app.get('/music')
-def get_music():
+def get_all_music():
     return {'music': music}
+
 
 @app.get('/music/<music_id>')
 def get_music(music_id):
     try:
-        musi = music[music_id]
-        return musi, 200
+        mu = music[music_id]
+        return mu, 200
     except KeyError:
         return {"message": "music not found"}, 400
+
 
 @app.post('/music')
 def create_music():
@@ -26,9 +28,9 @@ def create_music():
 def edit_music(music_id):
     music_data = request.get_json()
     if music_id in music:
-        musi = music[music_id]
-        musi['body'] = music_data['body']
-        return musi, 200
+        mu = music[music_id]
+        mu['body'] = music_data['body']
+        return mu, 200
     return {"message": "music not found"}, 400
 
 
