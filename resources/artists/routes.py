@@ -48,6 +48,6 @@ def delete_artist():
 def get_artist_music(artist_id):
     if artist_id not in artists:
         return {"message": "artist not found"}, 400
-    artist_music = [musi for musi in music.values() if musi['artist_id'] == artist_id]
+    artist_music = [mu for mu in music.values() if mu['artist_id'] == artist_id]
     return artist_music, 200
 
