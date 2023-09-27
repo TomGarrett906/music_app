@@ -1,3 +1,4 @@
 .env
 music_app/
 __pycache__/
+migrations/
