@@ -10,6 +10,7 @@ class ArtistModel(database.Model):
     password_hash = database.Column(database.String, nullable = False)
     first_name = database.Column(database.String)
     last_name = database.Column(database.String)
+    music = database.relationship('MusicModel', backref='author', lazy='dynamic', cascade='all, delete')
 
     def __repr__(self):
         return f'<Artist: {self.username}'

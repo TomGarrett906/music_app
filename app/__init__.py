@@ -19,3 +19,4 @@ api.register_blueprint(music_bp)
 from resources.artists import routes
 from resources.music import routes
 from resources.artists.ArtistModel import ArtistModel
+from resources.music.MusicModel import MusicModel
