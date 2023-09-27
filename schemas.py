@@ -20,3 +20,7 @@ class UpdateArtistSchema(Schema):
     new_password = fields.Str()
     first_name = fields.Str()
     last_name = fields.Str()
+
+class DeleteArtistSchema(Schema):
+    username = fields.Str(required = True)
+    email = fields.Str(required = True)
