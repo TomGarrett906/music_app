@@ -1,3 +1,4 @@
+
 artists = {
     '1': {
         'username':'jimihendrix',

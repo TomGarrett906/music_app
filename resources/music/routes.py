@@ -3,6 +3,8 @@ from flask.views import MethodView
 from uuid import uuid4
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
+
+from resources.artists.ArtistModel import ArtistModel
 from . MusicModel import MusicModel
 from schemas import MusicSchema
 from . import bp
