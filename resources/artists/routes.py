@@ -1,9 +1,10 @@
 
 from flask.views import MethodView
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
-from schemas import ArtistSchema, ArtistSchemaNested, UpdateArtistSchema, DeleteArtistSchema
+from schemas import ArtistSchema, ArtistSchemaNested, UpdateArtistSchema, AuthArtistSchema
 
 from . import bp
 from .ArtistModel import ArtistModel
@@ -19,24 +20,18 @@ class ArtistList(MethodView):
         artists = ArtistModel.query.all()
         return artists
 
-    @bp.arguments(ArtistSchema)
-    @bp.response(201, ArtistSchema)       
-    def post(self, artist_data):
-        artist = ArtistModel()
-        artist.from_dict(artist_data)
-        try:
-            artist.save()
-            return artist_data
-        except IntegrityError:
-            abort(400, message='This Username or Email is taken')
-
-    @bp.arguments(DeleteArtistSchema)  
+   
+    @jwt_required()
+    @bp.arguments(AuthArtistSchema)  
     def delete(self, artist_data):
-        artist = ArtistModel.query.filter_by(username=artist_data['username']).first()
-        if artist and artist.check_password(artist_data['password']):
+        user_id = get_jwt_identity()
+        artist = ArtistModel.query.get(user_id)
+ 
+        if artist and artist.username == artist_data['user_name'] and artist.check_password(artist_data['password']):
             artist.delete()
             return {"message": f"{artist_data['username']} deleted"}, 202
         abort(400, message="Username or Password Invalid")
+
 
 #----------------------------------------------------------------------
 
@@ -44,10 +39,18 @@ class ArtistList(MethodView):
 class Artist(MethodView):
     @bp.response(200, ArtistSchemaNested)       
     def get(self, artist_id):
-        artist = ArtistModel.query.get_or_404(artist_id, description='Artist Not Found')
-        return artist
-    
+        artist = None
+        if artist_id.isdigit():
+            artist = ArtistModel.query.get(artist_id)
+        else:
+            artist = ArtistModel.query.filter_by(username=artist_id).first()
+        if artist:
+            return artist
+        abort(400, message='Please enter vaild username or id')
+
+
 #UPDATE ARTIST
+    @jwt_required()
     @bp.arguments(UpdateArtistSchema)
     @bp.response(202, ArtistSchema)                    
     def put(self, artist_data, artist_id):
@@ -65,11 +68,14 @@ class Artist(MethodView):
 #----------------------------------------------------------------------
 
 
-@bp.route('/artist/follow.<follower_id>/<followed_id>')
+@bp.route('/artist/follow/<followed_id>')
 class FollowUser(MethodView):
 
+
+    @jwt_required()
     @bp.response(200, ArtistSchema(many=True))    
-    def post(self, follower_id, followed_id):
+    def post(self, followed_id):
+        follower_id = get_jwt_identity()
         artist = ArtistModel.query.get(follower_id)
         artist_to_follow = ArtistModel.query.get(followed_id)
         if artist and artist_to_follow:
@@ -77,8 +83,10 @@ class FollowUser(MethodView):
             return artist.followed.all()
         abort(400, message="artist not found")
 
+    @jwt_required()
     @bp.response(202, ArtistSchema(many=True))    
-    def put(self, follower_id, followed_id):
+    def put(self, followed_id):
+        follower_id = get_jwt_identity()
         artist = ArtistModel.query.get(follower_id)
         artist_to_unfollow = ArtistModel.query.get(followed_id)
         if artist and artist_to_unfollow:

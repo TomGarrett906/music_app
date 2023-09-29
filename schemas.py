@@ -12,7 +12,7 @@ class ArtistSchema(Schema):
 class MusicSchema(Schema):
     id = fields.Str(dump_only = True)
     body = fields.Str(required = True)
-    user_id = fields.Int(required = True)
+    user_id = fields.Int(dump_only = True)
     timestamp = fields.Str(dump_only=True)
     artist = fields.Nested(ArtistSchema(), dump_only = True)
 
@@ -28,6 +28,7 @@ class UpdateArtistSchema(Schema):
     first_name = fields.Str()
     last_name = fields.Str()
 
-class DeleteArtistSchema(Schema):
-    username = fields.Str(required = True)
+class AuthArtistSchema(Schema):
+    username = fields.Str()
+    email = fields.Str()
     password = fields.Str(required = True, load_only = True)
