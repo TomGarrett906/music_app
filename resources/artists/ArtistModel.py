@@ -11,6 +11,7 @@ followers = database.Table('followers',
     database.Column('followed_id', database.Integer, database.ForeignKey('artists.id')))
 
 class ArtistModel(database.Model):
+
     __tablename__ = 'artists'
 
     id = database.Column(database.Integer, primary_key = True)

@@ -1,11 +1,11 @@
 from flask import request
-from flask.views import MethodView
 from uuid import uuid4
+from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
 
 from resources.artists.ArtistModel import ArtistModel
-from . MusicModel import MusicModel
+from .MusicModel import MusicModel
 from schemas import MusicSchema
 from . import bp
 
@@ -14,7 +14,6 @@ from . import bp
 #----------------------------------------------------------------------
 @bp.route('/')
 class MusicList(MethodView):
-
     @bp.response(200, MusicSchema(many=True))
     def get(self):
         return MusicModel.query.all()

@@ -14,7 +14,7 @@ class MusicSchema(Schema):
     body = fields.Str(required = True)
     user_id = fields.Int(required = True)
     timestamp = fields.Str(dump_only=True)
-    artist = fields.Nested(ArtistSchema(), dump_only = True)
+    # artist = fields.Nested(ArtistSchema(), dump_only = True)
 
 class ArtistSchemaNested(Schema):
     music = fields.List(fields.Nested(MusicSchema), dump_only = True)

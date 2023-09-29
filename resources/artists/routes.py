@@ -1,14 +1,12 @@
-
 from flask.views import MethodView
-
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
 from schemas import ArtistSchema, ArtistSchemaNested, UpdateArtistSchema, DeleteArtistSchema
 
-from . import bp
 from .ArtistModel import ArtistModel
 
 from database import artists, music
+from . import bp
 
 
 #----------------------------------------------------------------------
@@ -66,7 +64,7 @@ class Artist(MethodView):
 
 
 @bp.route('/artist/follow.<follower_id>/<followed_id>')
-class FollowUser(MethodView):
+class FollowArtist(MethodView):
 
     @bp.response(200, ArtistSchema(many=True))    
     def post(self, follower_id, followed_id):
